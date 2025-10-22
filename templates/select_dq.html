@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select DQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Select Data Quality Validation</h2>
+    <form method="post">
+      <label>Choose DQ Type:</label>
+      <select name="dq_type" id="dq_type" required>
+        <option value="kyc">KYC DQ</option>
+        <option value="credit">Credit Card DQ</option>
+      </select><br><br>
+
+      <label>Show Top Rows:</label>
+      <select name="row_limit">
+        <option>5</option><option>10</option><option>20</option><option>50</option>
+      </select><br><br>
+
+      <label>Select a rule (optional):</label>
+      <select name="rule_name">
+        <option value="">-- Run All --</option>
+        {% for r in rules %}<option>{{ r }}</option>{% endfor %}
+      </select><br><br>
+
+      <button name="run_all" type="submit">Run Validation</button>
+    </form>
+  </div>
+</body>
+</html>

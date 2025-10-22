@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AutoDQ Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="login-box">
+    <h2>AutoDQ Login</h2>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    {% if success %}<p class="success">{{ success }}</p>{% endif %}
+    <form method="post">
+      <input type="text" name="username" placeholder="Username" required><br>
+      <input type="password" name="password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
+    <h4>New user?</h4>
+    <form action="/signup" method="post">
+      <input type="text" name="username" placeholder="New Username" required><br>
+      <input type="password" name="password" placeholder="New Password" required><br>
+      <button type="submit">Signup</button>
+    </form>
+  </div>
+</body>
+</html>

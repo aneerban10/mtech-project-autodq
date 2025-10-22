@@ -1,0 +1,56 @@
+rules:
+
+  # 1. KYC Type must be valid
+  - name: Valid KYC Type
+    column: kyc_type
+    rule: one_of
+    value: ["aadhar", "adhaar", "adhar", "driving license", "dl", "voter id", "passport"]
+
+  # 2. Expiry date is required for DL and Passport, must be empty for others
+  - name: Expiry Required for DL/Passport
+    rule: not_null 
+    column: kyc_expiry
+    condition: kyc_type in ['dl', 'driving license','passport']
+
+  # 3. Expiry date must be in the future
+  - name: Expiry in Future
+    rule: date_greater_than_today
+    column: kyc_expiry
+    condition: kyc_expiry is not null
+
+  # 4. KYC Number must be present
+  - name: KYC Number Present
+    column: kyc_number
+    rule: not_null
+
+  # 5. Aadhar number format: XXXXXXXX1234
+  - name: Aadhar Number Masking Format
+    rule: custom_regex
+    column: kyc_number
+    condition: kyc_type in ['aadhar', 'adhaar', 'adhar']
+    value: "^X{8}[0-9]{4}$"
+
+  # 6. Passport and Voter ID must be alphanumeric
+  - name: Alphanumeric Passport/Voter
+    rule: alphanumeric
+    column: kyc_number
+    condition: kyc_type in ['passport', 'voter id']
+
+  # 7. DL should have more than 5 characters
+  - name: DL Length Check
+    rule: min_length
+    column: kyc_number
+    value: 6
+    condition: kyc_type in ['dl', 'driving license']
+
+  # 8. KYC Mode should be in defined values
+  - name: Valid KYC Mode
+    column: kyc_mode
+    rule: one_of
+    value: ["biometric", "vcip", "physical"]
+
+  # 9. Expiry Must Be Empty For Non-DL-Passport
+  - name: Expiry Check For Non-DL-Passport
+    rule: empty
+    column: kyc_expiry
+    condition: kyc_type not in ['dl', 'driving license','passport']

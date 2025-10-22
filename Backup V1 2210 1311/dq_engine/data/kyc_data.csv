@@ -1,0 +1,12 @@
+customer_id,kyc_type,kyc_expiry,kyc_number,kyc_mode
+C001,aadhar,,XXXXXXXXX1234,biometric
+C002,passport,20-05-2026,N1234567,vcip
+C003,voter id,,ID987654,physical
+C004,driving license,01-01-2020,MH12DL1234,biometric
+C005,adhar,,XXXXXXXX12X4,app
+C006,dl,01-11-2025,DL99,physical
+C007,adhaar,15-08-2024,XXXXXXXX4321,vcip
+C008,PAN,,ABCTY1234D,biometric
+C009,passport,,,biometric
+C010,aadhar,,XXXXXXXX1234,biometric
+C011,dl,01-11-2025,ABCDABCD,physical

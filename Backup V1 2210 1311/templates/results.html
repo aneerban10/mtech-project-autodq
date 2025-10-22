@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Validation Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>{{ dq_type | upper }} DQ Results</h2>
+
+    <h3>Sample Data (Top Rows)</h3>
+    {{ data | safe }}
+
+    <h3>Validation Results</h3>
+    <table class="data-table">
+      <tr><th>Rule</th><th>Failed Count</th><th>Passed Count</th></tr>
+      {% for r in results %}
+      <tr>
+        <td>{{ r['rule'] }}</td>
+        <td>{{ r['failed_count'] }}</td>
+        <td>{{ r['passed_count'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <br>
+    <a href="/select_dq">Back</a> | <a href="/logout">Logout</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<h3 class="mb-3">DQ Rule Execution for {{ dataset.upper() }}</h3>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Rule Name</th>
+            <th>Failed Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for res in results %}
+        <tr>
+            <td>{{ res.rule }}</td>
+            <td>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modal{{ loop.index }}">
+                    {{ res.failed_count }}
+                </a>
+
+                <!-- Modal -->
+                <div class="modal fade" id="modal{{ loop.index }}" tabindex="-1" aria-labelledby="modalLabel{{ loop.index }}" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel{{ loop.index }}">{{ res.rule }} - Failed Rows</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div style="overflow-x:auto;">
+                          <table class="table table-sm table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    {% for col in res.failed_rows.columns %}
+                                    <th>{{ col }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for idx, row in res.failed_rows.iterrows() %}
+                                <tr>
+                                    {% for col in res.failed_rows.columns %}
+                                    <td>{{ row[col] }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
