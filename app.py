@@ -1,19 +1,61 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,session
 from dq_engine.main_validator import run_all_rules, run_single_rule
+import pandas as pd
+from werkzeug.security import generate_password_hash, check_password_hash
+import sqlite3, os
 import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
+DB_PATH = "users.db"
+
+def init_db():
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE,
+                password TEXT
+            )
+        """)
+init_db()
+
+
 # ---------------- LOGIN/SIGNUP ----------------
 @app.route("/", methods=["GET", "POST"])
 def login():
+    error = None
+    success = request.args.get("success")
     if request.method == "POST":
-        user = request.form['userid']
+        username = request.form['userid']
         pwd = request.form['password']
-        # Check SQLite here
-        return redirect(url_for("dataset_selection"))
-    return render_template("login.html")
+
+        with sqlite3.connect(DB_PATH) as conn:
+            user = conn.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
+
+        if user and check_password_hash(user[2], pwd):
+            session["user"] = username
+            return redirect(url_for("dataset_selection"))
+        else:
+            error = "Invalid credentials"
+
+    return render_template("login.html", error=error, success=success)
+
+
+@app.route("/signup", methods=["POST"])
+def signup():
+    username = request.form["userid"]
+    pwd = generate_password_hash(request.form["password"])
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute("INSERT INTO users (username, password) VALUES (?,?)", (username, pwd))
+        # Pass success message as query param to login page
+        return redirect(url_for("login", success="Signup successful! Please login."))
+    except sqlite3.IntegrityError:
+        return render_template("login.html", error="Username already exists.")
+
 
 # ---------------- DATASET SELECTION ----------------
 @app.route("/dataset_selection", methods=["GET", "POST"])
