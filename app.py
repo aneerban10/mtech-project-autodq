@@ -118,5 +118,8 @@ def dq_run(dataset):
                 results.extend(res)
     return render_template("dq_run.html", rules=rules_list, results=results,dataset=dataset)
 
+#if __name__ == "__main__":
+#    app.run(debug=True)
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Render provides the PORT via environment variable
+    app.run(host="0.0.0.0", port=port, debug=True)
